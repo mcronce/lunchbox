@@ -27,7 +27,7 @@ macro_rules! handler {
 macro_rules! db_handler {
 	($db:ident, $conn:ident, $func:block) => {
 		handler!({
-			let mut $conn = $db.get().unwrap();
+			let mut $conn = $db.get().expect("Failed to get MySQL connection from pool");
 			$func
 		})
 	}
