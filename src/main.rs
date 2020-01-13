@@ -2,6 +2,7 @@
 //#![feature(type_alias_impl_trait)]
 #![allow(unused_parens)]
 extern crate actix_web;
+extern crate env_logger;
 extern crate mysql;
 extern crate r2d2;
 extern crate r2d2_mysql;
@@ -38,8 +39,12 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 		r2d2::Pool::builder().max_size(threads as u32 * 2).build(manager)?
 	};
 
+	std::env::set_var("RUST_LOG", "actix_web=info");
+	env_logger::init();
 	let result = actix_web::HttpServer::new(move || {
-		actix_web::App::new().data(pool.clone())
+		actix_web::App::new()
+			.data(pool.clone())
+			.wrap(actix_web::middleware::Logger::default())
 			.route("/users", actix_web::web::post().to(user::create))
 			.route("/users", actix_web::web::get().to(user::get_all))
 			.route("/users/{id}", actix_web::web::get().to(user::get_single))
