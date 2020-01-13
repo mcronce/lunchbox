@@ -41,9 +41,9 @@ pub(crate) async fn create(user: actix_web::web::Json<User>, db: common::Databas
 pub(crate) async fn get_all(db: common::DatabasePool) -> common::HandlerResult /* {{{ */ {
 	db_handler!(db, conn, {
 		let result = conn.prep_exec("SELECT * FROM users", ())?;
-		let users: Vec<User> = result.map(|row| {
+		let users = result.map(|row| {
 			let row = row.unwrap();
-			mysql::from_row::<User>(row)
+			mysql::from_row(row)
 		}).collect();
 		Ok::<Vec<User>, mysql::Error>(users)
 	})
@@ -53,7 +53,7 @@ pub(crate) async fn get_single(id: common::Path<u32>, db: common::DatabasePool) 
 	db_handler!(db, conn, {
 		let mut result = conn.prep_exec("SELECT * FROM users WHERE id = ?", params!(*id))?;
 		let row = result.next().unwrap()?;
-		let user = mysql::from_row::<User>(row);
+		let user = mysql::from_row(row);
 		Ok::<User, mysql::Error>(user)
 	})
 } // }}}
