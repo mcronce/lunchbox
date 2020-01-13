@@ -3,6 +3,7 @@ extern crate mysql;
 extern crate r2d2;
 extern crate r2d2_mysql;
 
+#[derive(Clone)]
 pub(crate) struct WebState {
 	pub(crate) db: r2d2::Pool<r2d2_mysql::MysqlConnectionManager>
 }

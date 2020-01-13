@@ -39,12 +39,14 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 		r2d2::Pool::builder().max_size(threads as u32 * 2).build(manager)?
 	};
 
+	let data = common::WebState{
+		db: pool
+	};
+
 	std::env::set_var("RUST_LOG", "actix_web=info");
 	env_logger::init();
 	let result = actix_web::HttpServer::new(move || actix_web::App::new()
-		.data(common::WebState{
-			db: pool.clone()
-		})
+		.data(data.clone())
 		.wrap(actix_web::middleware::Logger::default())
 		.route("/users", actix_web::web::post().to(user::create))
 		.route("/users", actix_web::web::get().to(user::get_all))
