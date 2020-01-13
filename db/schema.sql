@@ -1,0 +1,43 @@
+CREATE TABLE users (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE users_paymethods (
+	user_id INT UNSIGNED NOT NULL,
+	method VARCHAR(255) NOT NULL,
+	method_info TEXT NOT NULL,
+	INDEX(user_id)
+);
+
+CREATE TABLE meals (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	owner_id INT UNSIGNED NOT NULL,
+	restaurant VARCHAR(255) NOT NULL,
+	opened DATETIME NOT NULL,
+	closed DATETIME,
+	ordered DATETIME,
+	acquired DATETIME,
+	delivered DATETIME,
+	INDEX(owner_id)
+);
+
+CREATE TABLE orders (
+	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	meal_id INT UNSIGNED NOT NULL,
+	user_id INT UNSIGNED NOT NULL,
+	paid TINYINT UNSIGNED NOT NULL,
+	paid_method VARCHAR(255),
+	INDEX(meal_id),
+	INDEX(user_id),
+	UNIQUE INDEX meal_id__user_id (meal_id, user_id)
+);
+
+CREATE TABLE orders_items (
+	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	order_id BIGINT UNSIGNED NOT NULL,
+	item VARCHAR(255) NOT NULL,
+	price DECIMAL(5, 2) NOT NULL,
+	INDEX(order_id)
+);
+
