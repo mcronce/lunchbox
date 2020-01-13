@@ -3,8 +3,12 @@ extern crate mysql;
 extern crate r2d2;
 extern crate r2d2_mysql;
 
+pub(crate) struct WebState {
+	pub(crate) db: r2d2::Pool<r2d2_mysql::MysqlConnectionManager>
+}
+
 pub(crate) type Path<T> = actix_web::web::Path<T>;
-pub(crate) type DatabasePool = actix_web::web::Data<r2d2::Pool<r2d2_mysql::MysqlConnectionManager>>;
+pub(crate) type State = actix_web::web::Data<WebState>;
 pub(crate) type HandlerResult = Result<actix_web::HttpResponse, actix_web::Error>;
 
 macro_rules! params {
@@ -25,9 +29,9 @@ macro_rules! handler {
 }
 
 macro_rules! db_handler {
-	($db:ident, $conn:ident, $func:block) => {
+	($state:ident, $conn:ident, $func:block) => {
 		handler!({
-			let mut $conn = $db.get().expect("Failed to get MySQL connection from pool");
+			let mut $conn = $state.db.get().expect("Failed to get MySQL connection from pool");
 			$func
 		})
 	}
