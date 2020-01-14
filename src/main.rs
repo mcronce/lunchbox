@@ -5,8 +5,6 @@ extern crate actix_session;
 extern crate actix_web;
 extern crate env_logger;
 extern crate mysql;
-extern crate r2d2;
-extern crate r2d2_mysql;
 extern crate serde;
 
 use std::error::Error;
@@ -36,8 +34,7 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 		builder.db_name(Some(env::get_default("MYSQL_DATABASE", "lunchbox")));
 		builder.user(Some(env::get("MYSQL_USERNAME").ok_or("MYSQL_USERNAME is required")?));
 		builder.pass(Some(env::get("MYSQL_PASSWORD").ok_or("MYSQL_PASSWORD is required")?));
-		let manager = r2d2_mysql::MysqlConnectionManager::new(builder);
-		r2d2::Pool::builder().max_size(threads as u32 * 2).build(manager)?
+		mysql::Pool::new_manual(2, threads * 2, builder)?
 	};
 
 	let data = common::WebState{
