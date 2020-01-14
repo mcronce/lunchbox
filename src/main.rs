@@ -1,6 +1,7 @@
 //#![feature(async_closure)]
 //#![feature(type_alias_impl_trait)]
 #![allow(unused_parens)]
+extern crate actix_session;
 extern crate actix_web;
 extern crate env_logger;
 extern crate mysql;
@@ -48,6 +49,7 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 	let result = actix_web::HttpServer::new(move || actix_web::App::new()
 		.data(data.clone())
 		.wrap(actix_web::middleware::Logger::default())
+		.wrap(actix_session::CookieSession::private(&[0; 32]).secure(false)) // TODO: Real key
 		.service(actix_web::web::scope("/api")
 			.route("/users", actix_web::web::post().to(user::create))
 			.route("/users", actix_web::web::get().to(user::get_all))
