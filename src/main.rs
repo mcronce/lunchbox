@@ -57,6 +57,7 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 			.route("/users/{id}", actix_web::web::post().to(user::update))
 			.route("/users/{id}", actix_web::web::delete().to(user::delete))
 		)
+		.service(actix_files::Files::new("/", "./static").index_file("index.html"))
 	).bind(format!("0.0.0.0:{}", port))?.run().await?;
 	Ok(result)
 } // }}}
