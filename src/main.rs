@@ -48,11 +48,13 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 	let result = actix_web::HttpServer::new(move || actix_web::App::new()
 		.data(data.clone())
 		.wrap(actix_web::middleware::Logger::default())
-		.route("/users", actix_web::web::post().to(user::create))
-		.route("/users", actix_web::web::get().to(user::get_all))
-		.route("/users/{id}", actix_web::web::get().to(user::get_single))
-		.route("/users/{id}", actix_web::web::post().to(user::update))
-		.route("/users/{id}", actix_web::web::delete().to(user::delete))
+		.service(actix_web::web::scope("/api")
+			.route("/users", actix_web::web::post().to(user::create))
+			.route("/users", actix_web::web::get().to(user::get_all))
+			.route("/users/{id}", actix_web::web::get().to(user::get_single))
+			.route("/users/{id}", actix_web::web::post().to(user::update))
+			.route("/users/{id}", actix_web::web::delete().to(user::delete))
+		)
 	).bind(format!("0.0.0.0:{}", port))?.run().await?;
 	Ok(result)
 } // }}}
