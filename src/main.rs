@@ -16,6 +16,7 @@ use std::error::Error;
 mod common;
 mod env;
 
+mod provider;
 mod user;
 
 #[actix_rt::main]
