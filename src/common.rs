@@ -46,3 +46,7 @@ macro_rules! db_handler {
 	}
 }
 
+macro_rules! code {
+	($code: ident) => { common::Response::Builder(::actix_web::HttpResponse::$code()) }
+}
+
