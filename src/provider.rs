@@ -44,7 +44,7 @@ pub struct AuthRequest {
 }
 
 #[responder]
-pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<bool> {
+pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<bool> /* {{{ */ {
 	let cookie = match req.cookie("actix-session") {
 		None => { return Ok(code!(BadRequest)); },
 		Some(c) => c
@@ -67,7 +67,7 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 
 	query!(state.db, "INSERT INTO sessions VALUES (?, ?)", &cookie.value(), &id);
 	Ok(json!(true))
-}
+} // }}}
 
 #[responder]
 pub(crate) async fn get_all(state: common::State) -> common::ResponderResult<Vec<Provider>> /* {{{ */ {
