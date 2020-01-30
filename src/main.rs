@@ -7,6 +7,9 @@ extern crate env_logger;
 extern crate mysql;
 extern crate serde;
 
+#[macro_use]
+extern crate lunchbox_macros;
+
 use std::error::Error;
 
 #[macro_use]
