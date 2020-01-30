@@ -46,6 +46,16 @@ macro_rules! db_handler {
 	}
 }
 
+macro_rules! col {
+	($row: ident, $i: literal, $type: ty) => {{
+		let result = $row.take::<$type, _>($i);
+		if(result.is_none()) {
+			return Err(Box::new(common::missing_column_error($row, $i)));
+		}
+		result.unwrap()
+	}}
+}
+
 macro_rules! code {
 	($code: ident) => { common::Response::Builder(::actix_web::HttpResponse::$code()) }
 }
