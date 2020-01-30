@@ -69,3 +69,10 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 	Ok(json!(true))
 }
 
+#[responder]
+pub(crate) async fn get_all(state: common::State) -> common::ResponderResult<Vec<Provider>> /* {{{ */ {
+	let result = query!(state.db, "SELECT * FROM providers");
+	let providers: Vec<Provider> = common::collect(result);
+	Ok(json!(providers))
+} // }}}
+
