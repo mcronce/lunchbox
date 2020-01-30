@@ -23,3 +23,5 @@ mysql = "~17"
 num_cpus = "~1"
 serde = {version = "~1", features = ["derive"]}
 
+lunchbox-macros = { path = "lunchbox-macros" }
+
