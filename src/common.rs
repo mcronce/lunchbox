@@ -28,24 +28,6 @@ macro_rules! params {
 	}}
 }
 
-macro_rules! handler {
-	($func:block) => {{
-		let future = actix_web::web::block(move || $func).await;
-		future
-			.map(|result| Ok(actix_web::HttpResponse::Ok().json(result)))
-			.map_err(|_| actix_web::HttpResponse::InternalServerError())?
-	}}
-}
-
-macro_rules! db_handler {
-	($state:ident, $conn:ident, $func:block) => {
-		handler!({
-			let mut $conn = $state.db.get_conn().expect("Failed to get MySQL connection from pool");
-			$func
-		})
-	}
-}
-
 macro_rules! query {
 	($db: expr, $query: literal) => {{
 		let db = $db.clone();
