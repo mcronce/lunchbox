@@ -1,14 +1,21 @@
 extern crate actix_web;
 extern crate mysql;
+extern crate serde;
 
 #[derive(Clone)]
 pub(crate) struct WebState {
 	pub(crate) db: mysql::Pool
 }
 
+pub(crate) enum Response<T: serde::Serialize> {
+	Json(T),
+	Text(String),
+	Builder(actix_web::dev::HttpResponseBuilder)
+}
+
 pub(crate) type Path<T> = actix_web::web::Path<T>;
 pub(crate) type State = actix_web::web::Data<WebState>;
-pub(crate) type HandlerResult = Result<actix_web::HttpResponse, actix_web::Error>;
+pub(crate) type ResponderResult<T: serde::Serialize> = Result<Response<T>, Box<dyn std::error::Error>>;
 
 macro_rules! params {
 	($($input: expr),*) => {{
