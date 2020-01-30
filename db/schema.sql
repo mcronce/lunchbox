@@ -50,3 +50,10 @@ CREATE TABLE orders_items (
 	INDEX(order_id)
 );
 
+CREATE TABLE sessions (
+	cookie VARCHAR(63) NOT NULL PRIMARY KEY,
+	provider_id INT UNSIGNED NOT NULL,
+	expiry DATETIME NOT NULL,
+	INDEX(provider_id)
+);
+
