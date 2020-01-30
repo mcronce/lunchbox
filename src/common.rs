@@ -50,3 +50,7 @@ macro_rules! code {
 	($code: ident) => { common::Response::Builder(::actix_web::HttpResponse::$code()) }
 }
 
+macro_rules! json {
+	($val: ident) => { common::Response::Json($val) };
+}
+
