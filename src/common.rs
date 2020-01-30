@@ -94,3 +94,10 @@ macro_rules! json {
 	($val: ident) => { common::Response::Json($val) };
 }
 
+pub(crate) fn collect<T: mysql::prelude::FromRow>(result: mysql::QueryResult) -> Vec<T> {
+	result.map(|row| {
+		let row = row.unwrap();
+		mysql::from_row(row)
+	}).collect()
+}
+
