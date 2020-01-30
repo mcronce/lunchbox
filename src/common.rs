@@ -46,6 +46,36 @@ macro_rules! db_handler {
 	}
 }
 
+macro_rules! query {
+	($db: expr, $query: literal) => {{
+		let db = $db.clone();
+		let future = actix_web::web::block(move || {
+			db.prep_exec($query, mysql::Params::Empty)
+		});
+		match future.await {
+			Ok(v) => v,
+			Err(e) => {
+				println!("!!! {}", e);
+				return Ok(code!(InternalServerError));
+			}
+		}
+	}};
+	($db: expr, $query: literal, $($params: expr),+) => {{
+		let db = $db.clone();
+		let params = params!($($params),+);
+		let future = actix_web::web::block(move || {
+			db.prep_exec($query, params)
+		});
+		match future.await {
+			Ok(v) => v,
+			Err(e) => {
+				println!("!!! {}", e);
+				return Ok(code!(InternalServerError));
+			}
+		}
+	}};
+}
+
 macro_rules! col {
 	($row: ident, $i: literal, $type: ty) => {{
 		let result = $row.take::<$type, _>($i);
