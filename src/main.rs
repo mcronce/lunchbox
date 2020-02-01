@@ -18,6 +18,7 @@ mod env;
 
 mod provider;
 mod user;
+mod paymethod;
 
 #[actix_rt::main]
 async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
@@ -61,6 +62,11 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 			.route("/users/{id}", actix_web::web::get().to(user::get_single))
 			.route("/users/{id}", actix_web::web::post().to(user::update))
 			.route("/users/{id}", actix_web::web::delete().to(user::delete))
+			.route("/paymethods", actix_web::web::get().to(paymethod::get_all))
+			.route("/users/{id}/paymethods", actix_web::web::post().to(paymethod::create))
+			.route("/users/{id}/paymethods", actix_web::web::get().to(paymethod::get_by_user_id))
+			.route("/users/{id}/paymethods/{name}", actix_web::web::post().to(paymethod::update))
+			.route("/users/{id}/paymethods/{name}", actix_web::web::delete().to(paymethod::delete))
 		)
 		.service(actix_files::Files::new("/", "./static").index_file("index.html"))
 	).bind(format!("0.0.0.0:{}", port))?.run().await?;
