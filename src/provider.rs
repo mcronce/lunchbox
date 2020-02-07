@@ -5,8 +5,6 @@ extern crate serde;
 
 extern crate lunchbox_macros;
 
-use std::error::Error;
-
 use actix_web::HttpMessage;
 
 use crate::common;
