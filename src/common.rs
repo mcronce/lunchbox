@@ -18,6 +18,7 @@ pub(crate) enum Response<T: serde::Serialize> {
 
 pub(crate) type Path<T> = actix_web::web::Path<T>;
 pub(crate) type State = actix_web::web::Data<WebState>;
+#[allow(type_alias_bounds)] // Even if this isn't enforced, I want to express intent explicitly to human readers
 pub(crate) type ResponderResult<T: serde::Serialize> = Result<Response<T>, Box<dyn std::error::Error>>;
 
 macro_rules! params {
