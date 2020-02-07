@@ -3,12 +3,19 @@ extern crate mysql;
 extern crate serde;
 
 use crate::common;
+use crate::paymethod;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct User {
 	#[serde(default)]
 	id: u32,
 	name: String
+}
+
+impl User {
+	fn pay_methods(&self, db: &mysql::Pool) -> Result<Vec<paymethod::PayMethod>, mysql::Error> {
+		paymethod::get_by_user(self.id, db)
+	}
 }
 
 impl mysql::prelude::FromRow for User /* {{{ */ {
