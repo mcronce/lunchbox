@@ -33,7 +33,7 @@ impl mysql::prelude::FromRow for PayMethod /* {{{ */ {
 #[responder]
 pub(crate) async fn create(user_id: common::Path<u32>, method: actix_web::web::Json<PayMethod>, state: common::State) -> common::ResponderResult<PayMethod> /* {{{ */ {
 	let method = method.into_inner();
-	let result = query!(state.db, "INSERT INTO users_paymethods VALUES (?, ?, ?)", *user_id, &method.method, &method.method_info);
+	query!(state.db, "INSERT INTO users_paymethods VALUES (?, ?, ?)", *user_id, &method.method, &method.method_info);
 	Ok(json!(method))
 } // }}}
 
