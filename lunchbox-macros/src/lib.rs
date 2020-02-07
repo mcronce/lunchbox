@@ -8,7 +8,7 @@ extern crate quote;
 pub fn responder(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream /* {{{ */ {
 	let func = syn::parse_macro_input!(input as syn::ItemFn);
 	//let attrs = &func.attrs;
-	let vis = &func.vis;
+	//let vis = &func.vis;
 	let sig = &func.sig;
 	let body = &func.block;
 	let name = &sig.ident;
