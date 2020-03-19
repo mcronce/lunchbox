@@ -15,6 +15,7 @@ CREATE TABLE users_paymethods (
 	user_id INT UNSIGNED NOT NULL PRIMARY KEY,
 	method VARCHAR(255) NOT NULL PRIMARY KEY,
 	method_info TEXT NOT NULL,
+	INDEX(method)
 );
 
 CREATE TABLE meals (
