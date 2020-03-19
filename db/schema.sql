@@ -20,14 +20,14 @@ CREATE TABLE users_paymethods (
 
 CREATE TABLE meals (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	owner_id INT UNSIGNED NOT NULL,
+	user_id INT UNSIGNED NOT NULL,
 	restaurant VARCHAR(255) NOT NULL,
 	opened DATETIME NOT NULL,
 	closed DATETIME,
 	ordered DATETIME,
 	acquired DATETIME,
 	delivered DATETIME,
-	INDEX(owner_id)
+	INDEX(user_id)
 );
 
 CREATE TABLE orders (
