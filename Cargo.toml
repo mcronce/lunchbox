@@ -19,6 +19,7 @@ actix-rt = "~1"
 actix-session = "~0.3"
 actix-web = "~2"
 bcrypt = "~0.6"
+chrono = {version = "~0.4", features = ["serde"]}
 env_logger = "~0.7"
 mysql = "~17"
 num_cpus = "~1"
