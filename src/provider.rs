@@ -37,6 +37,26 @@ pub struct AuthRequest {
 	password: String
 }
 
+// TODO:  Make this a middleware
+async fn check_session(req: &actix_web::web::HttpRequest, db: &mysql::Pool) -> Result<Option<Provider>, mysql::Error> {
+	let cookie = match req.cookie("actix-session") {
+		None => { return Ok(None); },
+		Some(c) => c
+	};
+
+	let provider = {
+		let row = {
+			let mut result = db.prep_exec("SELECT providers.* FROM sessions INNER JOIN providers ON sessions.provider_id = providers.id WHERE cookie = ? AND expiry > NOW()", params!(&cookie.value()))?;
+			match result.next() {
+				None => {return Ok(None); },
+				Some(r) => r.unwrap()
+			}
+		};
+		mysql::from_row(row)
+	};
+	Ok(Some(provider))
+}
+
 #[responder]
 pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<bool> /* {{{ */ {
 	let cookie = match req.cookie("actix-session") {
