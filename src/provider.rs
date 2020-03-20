@@ -91,6 +91,22 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 } // }}}
 
 #[responder]
+pub(crate) async fn create(body: actix_web::web::Json<ProviderRequest>, req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<Provider> {
+	if(check_session(&req, &state.db).await?.is_none()) {
+		return Ok(code!(Unauthorized));
+	}
+	let body = body.into_inner();
+	let hash = bcrypt::hash(body.password, bcrypt::DEFAULT_COST)?;
+	query!(state.db, "INSERT INTO providers VALUES (?, ?, ?)", &body.id, &body.email, &hash);
+	let provider = Provider{
+		id: body.id,
+		email: body.email,
+		password_hash: hash
+	};
+	Ok(json!(provider))
+}
+
+#[responder]
 pub(crate) async fn get_all(req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<Vec<Provider>> /* {{{ */ {
 	if(check_session(&req, &state.db).await?.is_none()) {
 		return Ok(code!(Unauthorized));
