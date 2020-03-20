@@ -84,7 +84,10 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 } // }}}
 
 #[responder]
-pub(crate) async fn get_all(state: common::State) -> common::ResponderResult<Vec<Provider>> /* {{{ */ {
+pub(crate) async fn get_all(req: actix_web::web::HttpRequest, state: common::State) -> common::ResponderResult<Vec<Provider>> /* {{{ */ {
+	if(check_session(&req, &state.db).await?.is_none()) {
+		return Ok(code!(Unauthorized));
+	}
 	let result = query!(state.db, "SELECT * FROM providers");
 	let providers: Vec<Provider> = common::collect(result);
 	Ok(json!(providers))
