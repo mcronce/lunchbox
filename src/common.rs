@@ -1,4 +1,5 @@
 extern crate actix_web;
+extern crate chrono;
 extern crate mysql;
 extern crate serde;
 
@@ -56,5 +57,9 @@ pub(crate) fn collect<T: mysql::prelude::FromRow>(result: mysql::QueryResult) ->
 		let row = row.unwrap();
 		mysql::from_row(row)
 	}).collect()
+}
+
+pub(crate) fn zerotime() -> chrono::NaiveDateTime {
+	chrono::NaiveDateTime::from_timestamp(0, 0)
 }
 
