@@ -13,7 +13,7 @@ pub struct User {
 }
 
 impl User {
-	fn pay_methods(&self, db: &mysql::Pool) -> Result<Vec<paymethod::PayMethod>, mysql::Error> {
+	pub(crate) fn pay_methods(&self, db: &mysql::Pool) -> Result<Vec<paymethod::PayMethod>, mysql::Error> {
 		paymethod::get_by_user(self.id, db)
 	}
 }
