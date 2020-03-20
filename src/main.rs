@@ -20,6 +20,7 @@ mod provider;
 mod user;
 mod paymethod;
 mod meal;
+mod order;
 
 #[actix_rt::main]
 async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
@@ -78,6 +79,12 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 			.route("/meals/{id}/order", actix_web::web::get().to(meal::order))
 			.route("/meals/{id}/acquire", actix_web::web::get().to(meal::acquire))
 			.route("/meals/{id}/deliver", actix_web::web::get().to(meal::deliver))
+			.route("/meals/{id}/orders", actix_web::web::post().to(order::create))
+			.route("/meals/{id}/orders", actix_web::web::get().to(order::get_by_meal_id))
+			.route("/orders", actix_web::web::get().to(order::get_all))
+			.route("/meals/{meal_id}/orders/{id}", actix_web::web::get().to(order::get_single))
+			.route("/meals/{meal_id}/orders/{id}", actix_web::web::post().to(order::update))
+			.route("/meals/{meal_id}/orders/{id}", actix_web::web::delete().to(order::delete))
 		)
 		.service(actix_files::Files::new("/", "./static").index_file("index.html"))
 	).bind(format!("0.0.0.0:{}", port))?.run().await?;
