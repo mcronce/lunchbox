@@ -10,7 +10,6 @@ use crate::common;
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Provider {
 	id: u32,
-	user_id: u32,
 	email: String,
 	password_hash: String
 }
@@ -21,14 +20,13 @@ impl mysql::prelude::FromRow for Provider /* {{{ */ {
 	}
 
 	fn from_row_opt(mut row: mysql::Row) -> Result<Self, mysql::FromRowError> {
-		if(row.len() != 4) {
+		if(row.len() != 3) {
 			return Err(mysql::FromRowError(row));
 		}
 		Ok(Provider{
 			id: row.take(0).unwrap(),
-			user_id: row.take(1).unwrap(),
-			email: row.take(2).unwrap(),
-			password_hash: row.take(3).unwrap()
+			email: row.take(1).unwrap(),
+			password_hash: row.take(2).unwrap()
 		})
 	}
 } // }}}
