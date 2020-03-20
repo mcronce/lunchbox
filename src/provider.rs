@@ -37,6 +37,13 @@ pub struct AuthRequest {
 	password: String
 }
 
+#[derive(serde::Deserialize)]
+pub struct ProviderRequest {
+	id: u32,
+	email: String,
+	password: String,
+}
+
 // TODO:  Make this a middleware
 async fn check_session(req: &actix_web::web::HttpRequest, db: &mysql::Pool) -> Result<Option<Provider>, mysql::Error> {
 	let cookie = match req.cookie("actix-session") {
