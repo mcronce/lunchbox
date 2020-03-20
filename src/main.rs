@@ -55,6 +55,7 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 		.service(actix_web::web::scope("/api")
 			.service(actix_web::web::scope("/provider")
 				.route("/providers", actix_web::web::get().to(provider::get_all))
+				.route("/providers", actix_web::web::post().to(provider::create))
 			)
 			.route("/authorize", actix_web::web::post().to(provider::authorize))
 			.route("/users", actix_web::web::post().to(user::create))
