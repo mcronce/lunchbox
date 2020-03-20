@@ -3,8 +3,6 @@ extern crate bcrypt;
 extern crate mysql;
 extern crate serde;
 
-extern crate lunchbox_macros;
-
 use actix_web::HttpMessage;
 
 use crate::common;
