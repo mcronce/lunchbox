@@ -19,6 +19,7 @@ mod env;
 mod provider;
 mod user;
 mod paymethod;
+mod meal;
 
 #[actix_rt::main]
 async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
@@ -68,6 +69,15 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 			.route("/users/{id}/paymethods", actix_web::web::get().to(paymethod::get_by_user_id))
 			.route("/users/{id}/paymethods/{name}", actix_web::web::post().to(paymethod::update))
 			.route("/users/{id}/paymethods/{name}", actix_web::web::delete().to(paymethod::delete))
+			.route("/meals", actix_web::web::post().to(meal::create))
+			.route("/meals", actix_web::web::get().to(meal::get_all))
+			.route("/meals/{id}", actix_web::web::get().to(meal::get_single))
+			.route("/meals/{id}", actix_web::web::post().to(meal::update))
+			.route("/meals/{id}", actix_web::web::delete().to(meal::delete))
+			.route("/meals/{id}/close", actix_web::web::get().to(meal::close))
+			.route("/meals/{id}/order", actix_web::web::get().to(meal::order))
+			.route("/meals/{id}/acquire", actix_web::web::get().to(meal::acquire))
+			.route("/meals/{id}/deliver", actix_web::web::get().to(meal::deliver))
 		)
 		.service(actix_files::Files::new("/", "./static").index_file("index.html"))
 	).bind(format!("0.0.0.0:{}", port))?.run().await?;
