@@ -8,7 +8,7 @@ extern crate mysql;
 extern crate serde;
 
 #[macro_use]
-extern crate lunchbox_macros;
+extern crate actix_helper_macros;
 
 use std::error::Error;
 
