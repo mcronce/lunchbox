@@ -59,7 +59,7 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 		col!(row, 1, u32)
 	};
 
-	query!(state.db, "INSERT INTO sessions VALUES (?, ?)", &cookie.value(), &id);
+	query!(state.db, "INSERT INTO sessions VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 DAY)) ON DUPLICATE KEY UPDATE provider_id = VALUES(provider_id), expiry = VALUES(expiry)", &cookie.value(), &id);
 	Ok(json!(true))
 } // }}}
 
