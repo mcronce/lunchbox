@@ -53,11 +53,11 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 		.wrap(actix_web::middleware::Logger::default())
 		.wrap(actix_session::CookieSession::private(&[0; 32]).secure(false)) // TODO: Real key
 		.service(actix_web::web::scope("/api")
+			.route("/authorize", actix_web::web::post().to(provider::authorize))
 			.service(actix_web::web::scope("/provider")
 				.route("/providers", actix_web::web::get().to(provider::get_all))
 				.route("/providers", actix_web::web::post().to(provider::create))
 			)
-			.route("/authorize", actix_web::web::post().to(provider::authorize))
 			.route("/users", actix_web::web::post().to(user::create))
 			.route("/users", actix_web::web::get().to(user::get_all))
 			.route("/users/{id}", actix_web::web::get().to(user::get_single))
