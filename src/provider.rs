@@ -46,7 +46,7 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 
 	let id = {
 		let mut row = {
-			let mut result = query!(state.db, "SELECT password_hash, id FROM providers WHERE email = ?", &auth_request.email);
+			let mut result = query!(state.db, "SELECT pass_hash, id FROM providers WHERE email = ?", &auth_request.email);
 			match result.next() {
 				None => { return Ok(code!(Unauthorized)); }
 				Some(r) => r.unwrap()
@@ -56,7 +56,7 @@ pub(crate) async fn authorize(auth_request: actix_web::web::Json<AuthRequest>, r
 		if(!bcrypt::verify(&auth_request.password, &hash)?) {
 			return Ok(code!(Unauthorized));
 		}
-		col!(row, 0, u32)
+		col!(row, 1, u32)
 	};
 
 	query!(state.db, "INSERT INTO sessions VALUES (?, ?)", &cookie.value(), &id);
