@@ -4,7 +4,7 @@ stages:
   - deploy
 
 services:
-  - docker:stable-dind
+  - docker:dind
 
 variables:
   DOCKER_DRIVER: overlay
