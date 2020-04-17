@@ -1,5 +1,4 @@
 stages:
-  - test
   - build
   - deploy
 
@@ -9,12 +8,6 @@ services:
 variables:
   DOCKER_DRIVER: overlay
   DOCKER_HOST: tcp://localhost:2376
-
-Test Rust code:
-  stage: test
-  image: rustlang/rust:nightly
-  script:
-    - cargo test
 
 Build container image:
   stage: build
