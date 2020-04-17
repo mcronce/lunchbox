@@ -24,7 +24,7 @@ Build container image:
     - sleep 5
     - docker version
   script:
-    - docker build --no-cache -t "mcronce/lunchbox:$CI_COMMIT_SHORT_SHA" . || sleep 3600
+    - docker build --no-cache -t "mcronce/lunchbox:$CI_COMMIT_SHORT_SHA" .
   after_script:
     - docker rmi -f "mcronce/lunchbox:$CI_COMMIT_SHORT_SHA"
 
