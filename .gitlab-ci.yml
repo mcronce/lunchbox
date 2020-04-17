@@ -21,7 +21,6 @@ Build container image:
   stage: build
   image: docker:stable
   before_script:
-    - sleep 5
     - docker version
   script:
     - docker build --no-cache -t "mcronce/lunchbox:$CI_COMMIT_SHORT_SHA" .
