@@ -30,6 +30,8 @@ Build container image:
 Push container image:
   stage: deploy
   image: docker:stable
+  before_script:
+    - docker version
   script:
     - docker build --no-cache -t "mcronce/lunchbox:${CI_COMMIT_TAG:-latest}" .
     - docker push "mcronce/lunchbox:${CI_COMMIT_TAG:-latest}"
