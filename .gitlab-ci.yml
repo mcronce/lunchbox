@@ -3,6 +3,13 @@ stages:
   - build
   - deploy
 
+services:
+  - docker:stable-dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  DOCKER_HOST: tcp://127.0.0.1:2375
+
 Test Rust code:
   stage: test
   image: rustlang/rust:nightly
