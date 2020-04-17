@@ -19,6 +19,8 @@ Test Rust code:
 Build container image:
   stage: build
   image: docker:stable
+  before_script:
+    - docker version
   script:
     - docker build --no-cache -t "mcronce/lunchbox:$CI_COMMIT_SHORT_SHA" . || sleep 3600
   after_script:
