@@ -5,7 +5,7 @@ stages:
 
 Test Rust code:
   stage: test
-  image: rustlang/rust:nightly-slim
+  image: rustlang/rust:nightly
   script:
     - cargo test
 
