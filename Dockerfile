@@ -14,5 +14,6 @@ RUN cd /home/node/app && npm install . && npm run-script build
 FROM centos
 COPY --from=builder /repo/target/release/lunchbox /usr/local/bin/lunchbox
 COPY --from=js-builder /home/node/app/public /static
+EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/lunchbox"]
 
