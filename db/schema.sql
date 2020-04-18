@@ -11,9 +11,10 @@ CREATE TABLE users (
 );
 
 CREATE TABLE users_paymethods (
-	user_id INT UNSIGNED NOT NULL PRIMARY KEY,
-	method VARCHAR(255) NOT NULL PRIMARY KEY,
+	user_id INT UNSIGNED NOT NULL,
+	method VARCHAR(255) NOT NULL,
 	method_info TEXT NOT NULL,
+	PRIMARY KEY (user_id, method),
 	INDEX(method)
 );
 
