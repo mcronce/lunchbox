@@ -1,6 +1,7 @@
 FROM rustlang/rust:nightly AS builder
 
-ADD . /repo
+ADD Cargo.toml /repo/
+ADD src /repo/src
 WORKDIR /repo
 
 RUN cargo build --release
