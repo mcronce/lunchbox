@@ -53,6 +53,7 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 	let result = actix_web::HttpServer::new(move || actix_web::App::new()
 		.data(data.clone())
 		.wrap(actix_web::middleware::Logger::default())
+		.wrap(actix_web::middleware::DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
 		.wrap(actix_session::CookieSession::private(&[0; 32]).secure(false)) // TODO: Real key
 		.service(actix_web::web::scope("/api")
 			.route("/authorize", actix_web::web::post().to(provider::authorize))
