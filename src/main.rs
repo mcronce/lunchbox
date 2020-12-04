@@ -4,7 +4,7 @@
 extern crate actix_session;
 extern crate actix_web;
 extern crate env_logger;
-extern crate mysql;
+extern crate sqlx;
 extern crate serde;
 
 #[macro_use]
@@ -35,13 +35,8 @@ async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
 	};
 
 	let pool = {
-		let mut builder = mysql::OptsBuilder::new();
-		builder.ip_or_hostname(Some(env::get_default("MYSQL_HOST", "localhost")));
-		builder.tcp_port(env::get_default("MYSQL_PORT", "3306").parse::<u16>()?);
-		builder.db_name(Some(env::get_default("MYSQL_DATABASE", "lunchbox")));
-		builder.user(Some(env::get("MYSQL_USERNAME").ok_or("MYSQL_USERNAME is required")?));
-		builder.pass(Some(env::get("MYSQL_PASSWORD").ok_or("MYSQL_PASSWORD is required")?));
-		mysql::Pool::new_manual(2, threads * 2, builder)?
+		let url = std::env::var("DATABASE_URL").unwrap();
+		sqlx::pool::Pool::connect(&url).await?
 	};
 
 	let data = common::WebState{
