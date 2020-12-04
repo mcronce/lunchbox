@@ -5,9 +5,6 @@ extern crate serde;
 
 pub(crate) use actix_helper_macros::*;
 
-mod error;
-pub use error::missing_column_error;
-
 #[derive(Clone)]
 pub(crate) struct WebState {
 	pub(crate) db: mysql::Pool
