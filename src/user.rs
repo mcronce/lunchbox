@@ -1,11 +1,11 @@
 extern crate actix_web;
-extern crate mysql;
+extern crate sqlx;
 extern crate serde;
 
 use crate::common;
 use crate::paymethod;
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, sqlx::FromRow)]
 pub struct User {
 	#[serde(default)]
 	id: u32,
@@ -13,47 +13,31 @@ pub struct User {
 }
 
 impl User {
-	pub(crate) fn pay_methods(&self, db: &mysql::Pool) -> Result<Vec<paymethod::PayMethod>, mysql::Error> {
-		paymethod::get_by_user(self.id, db)
+	pub(crate) async fn pay_methods(&self, tx: &mut sqlx::Transaction<'_, sqlx::MySql>) -> Result<Vec<paymethod::PayMethod>, sqlx::Error> {
+		paymethod::get_by_user(self.id, tx).await
 	}
 }
-
-impl mysql::prelude::FromRow for User /* {{{ */ {
-	fn from_row(row: mysql::Row) -> Self {
-		Self::from_row_opt(row).expect("Failed to deserialize User from MySQL row")
-	}
-
-	fn from_row_opt(mut row: mysql::Row) -> Result<Self, mysql::FromRowError> {
-		if(row.len() != 2) {
-			return Err(mysql::FromRowError(row));
-		}
-		Ok(User{
-			id: row.take(0).unwrap(),
-			name: row.take(1).unwrap()
-		})
-	}
-} // }}}
 
 #[responder]
 pub(crate) async fn create(user: actix_web::web::Json<User>, state: common::State) -> common::ResponderResult<User> /* {{{ */ {
 	let mut user = user.into_inner();
-	let result = query!(state.db, "INSERT INTO users VALUES (DEFAULT, ?)", &user.name);
+	let mut tx = state.db.begin().await?;
+	let result = sqlx::query!("INSERT INTO users VALUES (DEFAULT, ?)", &user.name).execute(&mut tx).await?;
 	user.id = result.last_insert_id() as u32;
 	Ok(json!(user))
 } // }}}
 
 #[responder]
 pub(crate) async fn get_all(state: common::State) -> common::ResponderResult<Vec<User>> /* {{{ */ {
-	let result = query!(state.db, "SELECT * FROM users");
-	let users = common::collect(result);
+	let mut tx = state.db.begin().await?;
+	let users = sqlx::query_as!(User, "SELECT * FROM users").fetch_all(&mut tx).await?;
 	Ok(json!(users))
 } // }}}
 
 #[responder]
 pub(crate) async fn get_single(id: common::Path<u32>, state: common::State) -> common::ResponderResult<User> /* {{{ */ {
-	let mut result = query!(state.db, "SELECT * FROM users WHERE id = ?", *id);
-	let row = result.next().unwrap()?;
-	let user = mysql::from_row(row);
+	let mut tx = state.db.begin().await?;
+	let user = sqlx::query_as!(User, "SELECT * FROM users WHERE id = ?", *id).fetch_one(&mut tx).await?;
 	Ok(json!(user))
 } // }}}
 
@@ -61,13 +45,15 @@ pub(crate) async fn get_single(id: common::Path<u32>, state: common::State) -> c
 pub(crate) async fn update(id: common::Path<u32>, user: actix_web::web::Json<User>, state: common::State) -> common::ResponderResult<User> /* {{{ */ {
 	let mut user = user.into_inner();
 	user.id = *id;
-	query!(state.db, "UPDATE users SET name = ? WHERE id = ?", &user.name, &user.id);
+	let mut tx = state.db.begin().await?;
+	sqlx::query!("UPDATE users SET name = ? WHERE id = ?", &user.name, &user.id).execute(&mut tx).await?;
 	Ok(json!(user))
 } // }}}
 
 #[responder]
 pub(crate) async fn delete(id: common::Path<u32>, state: common::State) -> common::ResponderResult<bool> /* {{{ */ {
-	query!(state.db, "DELETE FROM users WHERE id = ?", *id);
+	let mut tx = state.db.begin().await?;
+	sqlx::query!("DELETE FROM users WHERE id = ?", *id).execute(&mut tx).await?;
 	Ok(json!(true))
 } // }}}
 
