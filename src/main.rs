@@ -14,7 +14,6 @@ use std::error::Error;
 
 #[macro_use]
 mod common;
-mod env;
 
 mod provider;
 mod user;
@@ -24,14 +23,10 @@ mod order;
 
 #[actix_rt::main]
 async fn main() -> Result<(), Box<dyn Error>> /* {{{ */ {
-	let threads = match env::get("LUNCHBOX_THREADS") {
-		Some(s) => s.parse::<usize>()?,
-		None => num_cpus::get()
-	};
-
-	let port = match env::get("LUNCHBOX_PORT") {
-		Some(s) => s.parse::<u16>()?,
-		None => 80
+	let port = match std::env::var("LUNCHBOX_PORT") {
+		Ok(s) => s.parse::<u16>()?,
+		Err(std::env::VarError::NotPresent) => 80,
+		Err(std::env::VarError::NotUnicode(s)) => panic!("LUNCHBOX_PORT was not unicode: {:?}", s)
 	};
 
 	let pool = {
