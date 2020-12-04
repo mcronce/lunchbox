@@ -1,7 +1,7 @@
 CREATE TABLE providers (
 	id INT UNSIGNED NOT NULL PRIMARY KEY,
 	email VARCHAR(255) NOT NULL,
-	pass_hash CHAR(60) NOT NULL,
+	password_hash CHAR(60) NOT NULL,
 	UNIQUE INDEX(email)
 );
 
